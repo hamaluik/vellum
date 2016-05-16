@@ -1,0 +1,3 @@
+-lib vellum
+-main Example
+-js output/example.js
