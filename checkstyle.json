@@ -428,7 +428,7 @@
 		},
 		{
 			"props": {
-				"spaceIfCondition": true,
+				"spaceIfCondition": false,
 				"spaceAroundBinop": true,
 				"spaceForLoop": true,
 				"ignoreRangeOperator": true,
