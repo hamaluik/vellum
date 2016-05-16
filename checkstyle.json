@@ -430,9 +430,9 @@
 			"props": {
 				"spaceIfCondition": false,
 				"spaceAroundBinop": true,
-				"spaceForLoop": true,
+				"spaceForLoop": false,
 				"ignoreRangeOperator": true,
-				"spaceWhileLoop": true,
+				"spaceWhileLoop": false,
 				"spaceCatch": true,
 				"spaceSwitchCase": true,
 				"noSpaceAroundUnop": true
