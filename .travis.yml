@@ -1,0 +1,23 @@
+# adapted from https://github.com/andyli/HaxeCI/blob/master/.travis.yml
+language: haxe
+
+env:
+    matrix:
+    - TARGET=node
+
+# Test with Haxe 3.2.1 and Haxe development.
+haxe:
+  - "3.2.1"
+  - development
+
+matrix:
+  # Allow Haxe development to fail.
+  allow_failures:
+    - haxe: development
+
+install:
+  # install haxelibs
+  - haxelib install buddy
+
+script:
+  - haxe test.${TARGET}.hxml

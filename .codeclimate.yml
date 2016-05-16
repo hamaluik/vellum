@@ -1,0 +1,10 @@
+engines:
+  haxe-checkstyle:
+    enabled: true
+
+exclude_paths:
+  - test/**/*
+
+ratings:
+  paths:
+    - "**.hx"
