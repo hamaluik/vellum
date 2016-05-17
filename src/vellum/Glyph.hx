@@ -5,13 +5,24 @@ class Glyph {
 	public static var CLEAR_BACKGROUND:Colour = Colour.BLACK;
 
 	public var code:Int;
-	public var foreground:Colour;
-	public var background:Colour;
+	public var foreground(default, set):Colour;
+	public function set_foreground(c:Colour):Colour {
+		if(c == null) foreground = CLEAR_FOREGROUND;
+		else foreground = c;
+		return foreground;
+	}
+
+	public var background(default, set):Colour;
+	public function set_background(c:Colour):Colour {
+		if(c == null) background = CLEAR_BACKGROUND;
+		else background = c;
+		return background;
+	}
 
 	public function new(code:Int, ?foreground:Colour, ?background:Colour) {
 		this.code = code;
-		this.foreground = foreground != null ? foreground : CLEAR_FOREGROUND;
-		this.background = background != null ? background : CLEAR_BACKGROUND;
+		this.foreground = foreground;
+		this.background = background;
 	}
 
 	public static function fromChar(char:String, ?foreground:Colour, ?background:Colour):Glyph {
