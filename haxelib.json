@@ -1,6 +1,6 @@
 {
   "name": "vellum",
-  "url" : "https://github.com/FuzzyWuzzie/haxe-vellum",
+  "url" : "https://github.com/FuzzyWuzzie/vellum",
   "license": "Apache 2.0",
   "tags": ["js"],
   "description": "A small terminal emulation package; based on and inspired by munificent/malison",
