@@ -2,6 +2,7 @@
   "name": "vellum",
   "url" : "https://github.com/FuzzyWuzzie/vellum",
   "license": "Apache 2.0",
+  "classPath": "src",
   "tags": ["js"],
   "description": "A small terminal emulation package; based on and inspired by munificent/malison",
   "version": "0.1.0",
