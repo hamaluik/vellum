@@ -1,5 +1,7 @@
 package vellum;
 
+using StringTools;
+
 class Terminal {
 	var glyphs:Array<Array<Glyph>>;
 
@@ -34,7 +36,7 @@ class Terminal {
 		if(clearGlyph == null) clearGlyph = Glyph.fromChar(' ');
 		for(y in 0...height) {
 			for(x in 0...width) {
-				drawGlyph(x, y, clearGlyph);
+				writeGlyph(x, y, clearGlyph);
 			}
 		}
 	}
@@ -49,24 +51,26 @@ class Terminal {
 
 	public function print(x:Int, y:Int, text:String, ?foreground, ?background) {
 		for(i in 0...text.length) {
-			// @todo: investigate line wrapping
+			// @todo: investigate line wrapping{}
 			if(x + i >= width) break;
-			drawCharCode(x + i, y, text.charCodeAt(i), foreground, background);
+			writeCharCode(x + i, y, text.fastCodeAt(i), foreground, background);
 		}
 	}
 
-	public function drawGlyph(x:Int, y:Int, glyph:Glyph) {
-		drawCharCode(x, y, glyph.code, glyph.foreground, glyph.background);
+	public function writeGlyph(x:Int, y:Int, glyph:Glyph) {
+		writeCharCode(x, y, glyph.code, glyph.foreground, glyph.background);
 	}
 
-	public function drawCharCode(x:Int, y:Int, code:Int, ?foreground:Colour, ?background:Colour) {
+	public function writeCharCode(x:Int, y:Int, code:Int, ?foreground:Colour, ?background:Colour) {
 		glyphs[y][x].code = code;
 		glyphs[y][x].foreground = foreground;
 		glyphs[y][x].background = background;
 	}
 
-	public function drawChar(x:Int, y:Int, char:String, ?foreground:Colour, ?background:Colour) {
+	public function writeChar(x:Int, y:Int, char:String, ?foreground:Colour, ?background:Colour) {
 		if(char.length < 1) throw '_char_ **must** have at least 1 character!';
-		drawCharCode(x, y, char.charCodeAt(0), foreground, background);
+		writeCharCode(x, y, char.fastCodeAt(0), foreground, background);
 	}
+
+	public function render() {}
 }

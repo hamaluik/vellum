@@ -1,5 +1,7 @@
 package vellum;
 
+using StringTools;
+
 class Glyph {
 	public static var CLEAR_FOREGROUND:Colour = Colour.WHITE;
 	public static var CLEAR_BACKGROUND:Colour = Colour.BLACK;
@@ -29,7 +31,7 @@ class Glyph {
 		if(char.length < 1) {
 			throw '_char_ **must** have at least 1 character!';
 		}
-		return new Glyph(char.charCodeAt(0), foreground, background);
+		return new Glyph(char.fastCodeAt(0), foreground, background);
 	}
 
 	public function equals(other:Glyph):Bool {
@@ -38,5 +40,9 @@ class Glyph {
 
 	public function notEquals(other:Glyph):Bool {
 		return this.code != other.code || this.foreground != other.foreground || this.background != other.background;
+	}
+
+	public function copy():Glyph {
+		return new Glyph(this.code, this.foreground, this.background);
 	}
 }
