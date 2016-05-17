@@ -1,214 +1,95 @@
-#common settings that generally should always be used with your language specific settings
+bin/
 
-# Auto detect text files and perform LF normalization
-# http://davidlaing.com/2012/09/19/customise-your-gitattributes-to-become-a-git-ninja/
-* text=auto
+# Created by https://www.gitignore.io/api/windows,osx,linux,sublimetext
 
-#
-# The above will handle all files NOT found below
-#
+### Windows ###
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
 
-# Documents
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
-*.md text
-*.adoc text
-*.textile text
-*.mustache text
-*.csv text
-*.tab text
-*.tsv text
-*.sql text
+# Folder config file
+Desktop.ini
 
-# Graphics
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.tif binary
-*.tiff binary
-*.ico binary
-*.svg binary
-*.eps binary
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
 
-## GITATTRIBUTES FOR WEB PROJECTS
-#
-# These settings are for any web project.
-#
-# Details per file setting:
-#   text    These files should be normalized (i.e. convert CRLF to LF).
-#   binary  These files are binary and should be left untouched.
-#
-# Note that binary is a macro for -text -diff.
-######################################################################
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
 
-## AUTO-DETECT - Handle line endings automatically for files detected
-## as text and leave all files detected as binary untouched.
-## This will handle all files NOT defined below.
-* text=auto
+# Windows shortcuts
+*.lnk
 
-## SOURCE CODE
-*.bat    text
-*.coffee text
-*.css    text
-*.htm    text
-*.html   text
-*.inc    text
-*.ini    text
-*.js     text
-*.json   text
-*.less   text
-*.php    text
-*.pl     text
-*.py     text
-*.rb     text
-*.sass   text
-*.scm    text
-*.scss   text
-*.sh     text
-*.sql    text
-*.styl   text
-*.ts     text
-*.xml    text
-*.xhtml  text
 
-## DOCUMENTATION
-*.markdown   text
-*.md         text
-*.mdwn       text
-*.mdown      text
-*.mkd        text
-*.mkdn       text
-*.mdtxt      text
-*.mdtext     text
-*.txt        text
-AUTHORS      text
-CHANGELOG    text
-CHANGES      text
-CONTRIBUTING text
-COPYING      text
-INSTALL      text
-license      text
-LICENSE      text
-NEWS         text
-readme       text
-*README*     text
-TODO         text
+### OSX ###
+*.DS_Store
+.AppleDouble
+.LSOverride
 
-## TEMPLATES
-*.dot        text
-*.ejs        text
-*.haml       text
-*.handlebars text
-*.hbs        text
-*.hbt        text
-*.jade       text
-*.latte      text
-*.mustache   text
-*.phtml      text
-*.tmpl       text
+# Icon must end with two \r
+Icon
 
-## LINTERS
-.csslintrc    text
-.eslintrc     text
-.jscsrc       text
-.jshintrc     text
-.jshintignore text
-.stylelintrc  text
 
-## CONFIGS
-*.bowerrc      text
-*.cnf          text
-*.conf         text
-*.config       text
-.editorconfig  text
-.gitattributes text
-.gitconfig     text
-.gitignore     text
-.htaccess      text
-*.npmignore    text
-*.yaml         text
-*.yml          text
-Makefile       text
-makefile       text
+# Thumbnails
+._*
 
-## HEROKU
-Procfile       text
-.slugignore    text
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
 
-## GRAPHICS
-*.ai   binary
-*.bmp  binary
-*.eps  binary
-*.gif  binary
-*.ico  binary
-*.jng  binary
-*.jp2  binary
-*.jpg  binary
-*.jpeg binary
-*.jpx  binary
-*.jxr  binary
-*.pdf  binary
-*.png  binary
-*.psb  binary
-*.psd  binary
-*.svg  text
-*.svgz binary
-*.tif  binary
-*.tiff binary
-*.wbmp binary
-*.webp binary
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
 
-## AUDIO
-*.kar  binary
-*.m4a  binary
-*.mid  binary
-*.midi binary
-*.mp3  binary
-*.ogg  binary
-*.ra   binary
 
-## VIDEO
-*.3gpp binary
-*.3gp  binary
-*.as   binary
-*.asf  binary
-*.asx  binary
-*.fla  binary
-*.flv  binary
-*.m4v  binary
-*.mng  binary
-*.mov  binary
-*.mp4  binary
-*.mpeg binary
-*.mpg  binary
-*.swc  binary
-*.swf  binary
-*.ts   binary
-*.webm binary
+### Linux ###
+*~
 
-## ARCHIVES
-*.7z  binary
-*.gz  binary
-*.rar binary
-*.tar binary
-*.zip binary
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
 
-## FONTS
-*.ttf   binary
-*.eot   binary
-*.otf   binary
-*.woff  binary
-*.woff2 binary
+# KDE directory preferences
+.directory
 
-## EXECUTABLES
-*.exe binary
-*.pyc binary
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+
+### SublimeText ###
+# cache files for sublime text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# workspace files are user-specific
+*.sublime-workspace
+
+# project files should be checked into the repository, unless a significant
+# proportion of contributors will probably not be using SublimeText
+# *.sublime-project
+
+# sftp configuration file
+sftp-config.json
+
+# Package control specific files
+Package Control.last-run
+Package Control.ca-list
+Package Control.ca-bundle
+Package Control.system-ca-bundle
+Package Control.cache/
+Package Control.ca-certs/
+bh_unicode_properties.cache
+
+# Sublime-github package stores a github token in this file
+# https://packagecontrol.io/packages/sublime-github
+GitHub.sublime-settings
