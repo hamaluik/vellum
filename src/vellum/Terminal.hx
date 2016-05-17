@@ -62,6 +62,10 @@ class Terminal {
 	}
 
 	public function writeCharCode(x:Int, y:Int, code:Int, ?foreground:Colour, ?background:Colour) {
+		if(x < 0) throw '_x_ must be >= 0!';
+		if(y < 0) throw '_y_ must be >= 0!';
+		if(x >= width) throw '_x_ must be < width = ${width}';
+		if(y >= height) throw '_y_ must be < height = ${height}';
 		glyphs[y][x].code = code;
 		glyphs[y][x].foreground = foreground;
 		glyphs[y][x].background = background;
