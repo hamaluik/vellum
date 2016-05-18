@@ -60,6 +60,156 @@ vellum_Display.prototype = {
 			this.writeCharCode(x + i,y,text.charCodeAt(i),foreground,background);
 		}
 	}
+	,printColoured: function(x,y,text,foreground,background) {
+		var i = 0;
+		var charCount = 0;
+		var originalForeground = foreground;
+		var originalBackground = background;
+		if(foreground == null) foreground = vellum_Glyph.CLEAR_FOREGROUND;
+		if(background == null) background = vellum_Glyph.CLEAR_BACKGROUND;
+		while(i < text.length) if(text.charAt(i) == "@" || text.charAt(i) == "#") {
+			var fore = text.charAt(i) == "@";
+			i++;
+			if(text.charAt(i) == "@" || text.charAt(i) == "#") break;
+			var col;
+			if(text.charAt(i) == "l") {
+				i++;
+				var _g = text.charAt(i);
+				switch(_g) {
+				case "k":
+					col = "rgb(64, 64, 64)";
+					break;
+				case "w":
+					col = "#fff";
+					break;
+				case "e":
+					col = "rgb(192, 192, 192)";
+					break;
+				case "r":
+					col = "rgb(255, 160, 160)";
+					break;
+				case "o":
+					col = "rgb(255, 200, 170)";
+					break;
+				case "a":
+					col = "rgb(255, 230, 150)";
+					break;
+				case "y":
+					col = "rgb(255, 255, 150)";
+					break;
+				case "g":
+					col = "rgb(130, 255, 90)";
+					break;
+				case "q":
+					col = "rgb(128, 255, 255)";
+					break;
+				case "b":
+					col = "rgb(128, 160, 255)";
+					break;
+				case "p":
+					col = "rgb(200, 140, 255)";
+					break;
+				case "n":
+					col = "rgb(190, 150, 100)";
+					break;
+				default:
+					if(fore) col = originalForeground; else col = originalBackground;
+				}
+			} else if(text.charAt(i) == "d") {
+				i++;
+				var _g1 = text.charAt(i);
+				switch(_g1) {
+				case "k":
+					col = "#000";
+					break;
+				case "w":
+					col = "rgb(192, 192, 192)";
+					break;
+				case "e":
+					col = "rgb(64, 64, 64)";
+					break;
+				case "r":
+					col = "rgb(100, 0, 0)";
+					break;
+				case "o":
+					col = "rgb(128, 64, 0)";
+					break;
+				case "a":
+					col = "rgb(128, 96, 0)";
+					break;
+				case "y":
+					col = "rgb(128, 128, 0)";
+					break;
+				case "g":
+					col = "rgb(0, 64, 0)";
+					break;
+				case "q":
+					col = "rgb(0, 128, 128)";
+					break;
+				case "b":
+					col = "rgb(0, 37, 168)";
+					break;
+				case "p":
+					col = "rgb(64, 0, 128)";
+					break;
+				case "n":
+					col = "rgb(100, 64, 32)";
+					break;
+				default:
+					if(fore) col = originalForeground; else col = originalBackground;
+				}
+			} else if(text.charAt(i) == "_") if(fore) col = originalForeground; else col = originalBackground; else {
+				var _g2 = text.charAt(i);
+				switch(_g2) {
+				case "k":
+					col = "#000";
+					break;
+				case "w":
+					col = "#fff";
+					break;
+				case "e":
+					col = "rgb(128, 128, 128)";
+					break;
+				case "r":
+					col = "rgb(220, 0, 0)";
+					break;
+				case "o":
+					col = "rgb(255, 128, 0)";
+					break;
+				case "a":
+					col = "rgb(255, 192, 0)";
+					break;
+				case "y":
+					col = "rgb(255, 255, 0)";
+					break;
+				case "g":
+					col = "rgb(0, 128, 0)";
+					break;
+				case "q":
+					col = "rgb(0, 255, 255)";
+					break;
+				case "b":
+					col = "rgb(0, 64, 255)";
+					break;
+				case "p":
+					col = "rgb(128, 0, 255)";
+					break;
+				case "n":
+					col = "rgb(160, 110, 60)";
+					break;
+				default:
+					if(fore) col = originalForeground; else col = originalBackground;
+				}
+			}
+			i++;
+			if(fore) foreground = col; else background = col;
+		} else {
+			if(x + charCount >= this.width) break;
+			this.writeCharCode(x + charCount,y,text.charCodeAt(i),foreground,background);
+			i++;
+			charCount++;
+		}
+	}
 	,writeGlyph: function(x,y,glyph) {
 		this.writeCharCode(x,y,glyph.code,glyph.foreground,glyph.background);
 	}
@@ -143,11 +293,11 @@ Example.main = function() {
 	Example.term = new vellum_CanvasTerminal(80,25,vellum_Font.Menlo());
 	Example.term.pushWindow(0,0,20,1).print(0,0,"Some windows:");
 	Example.w1 = new BorderedWindow(2,2,1,30,5);
-	Example.w1.print(1,1,"Hello world!");
+	Example.w1.printColoured(1,1,"@r#deH@oe@yl@gl@lbo@_#_ #q@kworld@_#_!");
 	Example.term.addWindow(Example.w1);
 	Example.w2 = new BorderedWindow(18,4,2,31,10);
 	Example.w2.print(1,1,"I'm on top!");
-	Example.w2.print(1,2,"Move me randomly with [SPACE]");
+	Example.w2.printColoured(1,3,"Move me randomly with @k#w[SPACE]");
 	Example.w2.bindKey(new vellum_KeyBinding(32,vellum_KeyEventType.PRESSED,null,null,function() {
 		Example.w2.x = Math.floor(50 * Math.random());
 		Example.w2.y = Math.floor(16 * Math.random());
