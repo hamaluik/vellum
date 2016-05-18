@@ -16,6 +16,9 @@ class RenderableTerminal extends Terminal {
 	}
 
 	override public function render() {
+		// render the windows into the terminal's display
+		super.render();
+
 		// calculate the change in glyphs
 		// so that we only draw changes
 		for(y in 0...height) {

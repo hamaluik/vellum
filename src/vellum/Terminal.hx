@@ -1,80 +1,67 @@
 package vellum;
 
-using StringTools;
-
-class Terminal {
-	var glyphs:Array<Array<Glyph>>;
-
-	public var width(default, set):Int;
-	@SuppressWarnings('checkstyle:InnerAssignment')
-	public function set_width(w:Int):Int {
-		// @todo: resize!
-		return width = w;
-	}
-
-	public var height(default, set):Int;
-	@SuppressWarnings('checkstyle:InnerAssignment')
-	public function set_height(h:Int):Int {
-		// @todo: resize!
-		return height = h;
-	}
+class Terminal extends Display {
+	var windows:Array<Window>;
 
 	public function new(width:Int, height:Int) {
-		this.width = width;
-		this.height = height;
-		glyphs = [];
-		for(y in 0...height) {
-			var row:Array<Glyph> = [];
-			for(x in 0...width) {
-				row.push(Glyph.fromChar(' '));
+		windows = [];
+		super(width, height);
+	}
+
+	public function sortWindows() {
+		// sort the windows based on depth
+		windows.sort(function(wa:Window, wb:Window):Int {
+			return wa.z - wb.z;
+		});
+	}
+
+	public function addWindow(window:Window) {
+		windows.push(window);
+		sortWindows();
+	}
+
+	public function removeWindow(window:Window) {
+		windows.remove(window);
+		sortWindows();
+	}
+
+	public function pushWindow(x:Int, y:Int, width:Int, height:Int):Window {
+		var z:Int = 0;
+		if(windows.length > 0) z = windows[windows.length - 1].z + 1;
+		var window:Window = new Window(x, y, z, width, height);
+		windows.push(window);
+		return window;
+	}
+
+	public function popWindow():Null<Window> {
+		return windows.pop();
+	}
+
+	public function getWindow(index:Int):Null<Window> {
+		if(index < 0 || index >= windows.length) return null;
+		return windows[index];
+	}
+
+	override public function render() {
+		// copy the glyphs (the windows should always be sorted based on depth)
+		for(w in windows) {
+			// render the window
+			w.render();
+
+			// now place it
+			for(wy in 0...w.height) {
+				for(wx in 0...w.width) {
+					var tx:Int = w.x + wx;
+					var ty:Int = w.y + wy;
+
+					// ensure bounds
+					// (fail silently if out of them)
+					if(tx < 0 || ty < 0 || tx >= width || ty >= height) continue;
+
+					// and write the glyph!
+					writeGlyph(tx, ty, w.glyphs[wy][wx]);
+				}
 			}
-			glyphs.push(row);
 		}
 	}
-
-	public function clear(?clearGlyph:Glyph) {
-		if(clearGlyph == null) clearGlyph = Glyph.fromChar(' ');
-		for(y in 0...height) {
-			for(x in 0...width) {
-				writeGlyph(x, y, clearGlyph);
-			}
-		}
-	}
-
-	public function glyph(x:Int, y:Int):Glyph {
-		if(x < 0) throw '_x_ must be >= 0!';
-		if(y < 0) throw '_y_ must be >= 0!';
-		if(x >= width) throw '_x_ must be < width = ${width}';
-		if(y >= height) throw '_y_ must be < height = ${height}';
-		return glyphs[y][x];
-	}
-
-	public function print(x:Int, y:Int, text:String, ?foreground, ?background) {
-		for(i in 0...text.length) {
-			// @todo: investigate line wrapping{}
-			if(x + i >= width) break;
-			writeCharCode(x + i, y, text.fastCodeAt(i), foreground, background);
-		}
-	}
-
-	public function writeGlyph(x:Int, y:Int, glyph:Glyph) {
-		writeCharCode(x, y, glyph.code, glyph.foreground, glyph.background);
-	}
-
-	public function writeCharCode(x:Int, y:Int, code:Int, ?foreground:Colour, ?background:Colour) {
-		if(x < 0) throw '_x_ must be >= 0!';
-		if(y < 0) throw '_y_ must be >= 0!';
-		if(x >= width) throw '_x_ must be < width = ${width}';
-		if(y >= height) throw '_y_ must be < height = ${height}';
-		glyphs[y][x].code = code;
-		glyphs[y][x].foreground = foreground;
-		glyphs[y][x].background = background;
-	}
-
-	public function writeChar(x:Int, y:Int, char:String, ?foreground:Colour, ?background:Colour) {
-		if(char.length < 1) throw '_char_ **must** have at least 1 character!';
-		writeCharCode(x, y, char.fastCodeAt(0), foreground, background);
-	}
-
-	public function render() {}
 }

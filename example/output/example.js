@@ -5,39 +5,7 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
-var Example = function() { };
-Example.main = function() {
-	window.console.info("pixel ratio: " + window.devicePixelRatio);
-	Example.term = new vellum_CanvasTerminal(80,25,vellum_Font.Menlo());
-	Example.term.print(0,0,"Hello world!");
-	Example.term.render();
-	window.setInterval(Example.refresh,500);
-};
-Example.refresh = function() {
-	Example.term.print(0,1,Example.x?"█":" ");
-	Example.term.render();
-	Example.x = !Example.x;
-};
-var HxOverrides = function() { };
-HxOverrides.cca = function(s,index) {
-	var x = s.charCodeAt(index);
-	if(x != x) return undefined;
-	return x;
-};
-var Std = function() { };
-Std["int"] = function(x) {
-	return x | 0;
-};
-var js__$Boot_HaxeError = function(val) {
-	Error.call(this);
-	this.val = val;
-	this.message = String(val);
-	if(Error.captureStackTrace) Error.captureStackTrace(this,js__$Boot_HaxeError);
-};
-js__$Boot_HaxeError.__super__ = Error;
-js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
-});
-var vellum_Terminal = function(width,height) {
+var vellum_Display = function(width,height) {
 	this.set_width(width);
 	this.set_height(height);
 	this.glyphs = [];
@@ -53,7 +21,7 @@ var vellum_Terminal = function(width,height) {
 		this.glyphs.push(row);
 	}
 };
-vellum_Terminal.prototype = {
+vellum_Display.prototype = {
 	set_width: function(w) {
 		return this.width = w;
 	}
@@ -109,6 +77,152 @@ vellum_Terminal.prototype = {
 	,render: function() {
 	}
 };
+var vellum_Window = function(x,y,z,width,height) {
+	this.x = x;
+	this.y = y;
+	this.z = z;
+	vellum_Display.call(this,width,height);
+};
+vellum_Window.__super__ = vellum_Display;
+vellum_Window.prototype = $extend(vellum_Display.prototype,{
+});
+var BorderedWindow = function(x,y,z,width,height) {
+	vellum_Window.call(this,x,y,z,width,height);
+};
+BorderedWindow.__super__ = vellum_Window;
+BorderedWindow.prototype = $extend(vellum_Window.prototype,{
+	render: function() {
+		var _g1 = 1;
+		var _g = this.width - 1;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.writeChar(i,0,"═","rgb(128, 128, 128)");
+			this.writeChar(i,this.height - 1,"═","rgb(128, 128, 128)");
+		}
+		var _g11 = 1;
+		var _g2 = this.height - 1;
+		while(_g11 < _g2) {
+			var j = _g11++;
+			this.writeChar(0,j,"║","rgb(128, 128, 128)");
+			this.writeChar(this.width - 1,j,"║","rgb(128, 128, 128)");
+		}
+		this.writeChar(0,0,"╔","rgb(128, 128, 128)");
+		this.writeChar(this.width - 1,0,"╗","rgb(128, 128, 128)");
+		this.writeChar(this.width - 1,this.height - 1,"╝","rgb(128, 128, 128)");
+		this.writeChar(0,this.height - 1,"╚","rgb(128, 128, 128)");
+	}
+});
+var Example = function() { };
+Example.main = function() {
+	Example.term = new vellum_CanvasTerminal(80,25,vellum_Font.Menlo());
+	Example.term.print(0,0,"Some windows:");
+	Example.w1 = new BorderedWindow(2,2,0,30,5);
+	Example.w1.print(1,1,"Hello world!");
+	Example.term.addWindow(Example.w1);
+	Example.w2 = new BorderedWindow(18,4,1,20,10);
+	Example.w2.print(1,1,"I'm on top!");
+	Example.term.addWindow(Example.w2);
+	window.setInterval(Example.refresh,500);
+};
+Example.refresh = function() {
+	Example.w1.print(1,2,Example.x?"█":" ");
+	Example.term.render();
+	Example.x = !Example.x;
+};
+var HxOverrides = function() { };
+HxOverrides.cca = function(s,index) {
+	var x = s.charCodeAt(index);
+	if(x != x) return undefined;
+	return x;
+};
+HxOverrides.indexOf = function(a,obj,i) {
+	var len = a.length;
+	if(i < 0) {
+		i += len;
+		if(i < 0) i = 0;
+	}
+	while(i < len) {
+		if(a[i] === obj) return i;
+		i++;
+	}
+	return -1;
+};
+HxOverrides.remove = function(a,obj) {
+	var i = HxOverrides.indexOf(a,obj,0);
+	if(i == -1) return false;
+	a.splice(i,1);
+	return true;
+};
+var Std = function() { };
+Std["int"] = function(x) {
+	return x | 0;
+};
+var js__$Boot_HaxeError = function(val) {
+	Error.call(this);
+	this.val = val;
+	this.message = String(val);
+	if(Error.captureStackTrace) Error.captureStackTrace(this,js__$Boot_HaxeError);
+};
+js__$Boot_HaxeError.__super__ = Error;
+js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
+});
+var vellum_Terminal = function(width,height) {
+	this.windows = [];
+	vellum_Display.call(this,width,height);
+};
+vellum_Terminal.__super__ = vellum_Display;
+vellum_Terminal.prototype = $extend(vellum_Display.prototype,{
+	sortWindows: function() {
+		this.windows.sort(function(wa,wb) {
+			return wa.z - wb.z;
+		});
+	}
+	,addWindow: function(window) {
+		this.windows.push(window);
+		this.sortWindows();
+	}
+	,removeWindow: function(window) {
+		HxOverrides.remove(this.windows,window);
+		this.sortWindows();
+	}
+	,pushWindow: function(x,y,width,height) {
+		var z = 0;
+		if(this.windows.length > 0) z = this.windows[this.windows.length - 1].z + 1;
+		var $window = new vellum_Window(x,y,z,width,height);
+		this.windows.push($window);
+		return $window;
+	}
+	,popWindow: function() {
+		return this.windows.pop();
+	}
+	,getWindow: function(index) {
+		if(index < 0 || index >= this.windows.length) return null;
+		return this.windows[index];
+	}
+	,render: function() {
+		var _g = 0;
+		var _g1 = this.windows;
+		while(_g < _g1.length) {
+			var w = _g1[_g];
+			++_g;
+			w.render();
+			var _g3 = 0;
+			var _g2 = w.height;
+			while(_g3 < _g2) {
+				var wy = _g3++;
+				var _g5 = 0;
+				var _g4 = w.width;
+				while(_g5 < _g4) {
+					var wx = _g5++;
+					var tx = w.x + wx;
+					var ty = w.y + wy;
+					if(tx < 0 || ty < 0 || tx >= this.width || ty >= this.height) continue;
+					this.writeGlyph(tx,ty,w.glyphs[wy][wx]);
+				}
+			}
+		}
+	}
+});
 var vellum_RenderableTerminal = function(width,height) {
 	vellum_Terminal.call(this,width,height);
 	this.oldGlyphs = [];
@@ -127,6 +241,7 @@ var vellum_RenderableTerminal = function(width,height) {
 vellum_RenderableTerminal.__super__ = vellum_Terminal;
 vellum_RenderableTerminal.prototype = $extend(vellum_Terminal.prototype,{
 	render: function() {
+		vellum_Terminal.prototype.render.call(this);
 		var _g1 = 0;
 		var _g = this.height;
 		while(_g1 < _g) {
@@ -217,8 +332,12 @@ vellum_Glyph.prototype = {
 		return new vellum_Glyph(this.code,this.foreground,this.background);
 	}
 };
+if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
+	return Array.prototype.indexOf.call(a,o,i);
+};
+vellum_Display.__meta__ = { fields : { set_width : { SuppressWarnings : ["checkstyle:InnerAssignment"]}, set_height : { SuppressWarnings : ["checkstyle:InnerAssignment"]}}};
 Example.x = true;
-vellum_Terminal.__meta__ = { fields : { set_width : { SuppressWarnings : ["checkstyle:InnerAssignment"]}, set_height : { SuppressWarnings : ["checkstyle:InnerAssignment"]}}};
+vellum_Font.__meta__ = { statics : { Courier : { SuppressWarnings : ["checkstyle:MagicNumber","checkstyle:MethodName"]}, Menlo : { SuppressWarnings : ["checkstyle:MagicNumber","checkstyle:MethodName"]}}};
 vellum_Glyph.CLEAR_FOREGROUND = "#fff";
 vellum_Glyph.CLEAR_BACKGROUND = "#000";
 Example.main();
