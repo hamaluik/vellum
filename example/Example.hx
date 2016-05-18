@@ -10,21 +10,26 @@ class Example {
 	static var term:CanvasTerminal;
 	static var x:Bool = true;
 
+	// create two bordered windows for demonstration purposes
 	static var w1:BorderedWindow;
 	static var w2:BorderedWindow;
 
 	public static function main() {
+		// setup the terminal
 		term = new CanvasTerminal(80, 25, vellum.Font.Menlo());
 
+		// add a regular, borderless window for some information
 		term.pushWindow(0, 0, 20, 1).print(0, 0, 'Some windows:');
 
+		// create a 'Hello world!' window
 		w1 = new BorderedWindow(2, 2, 1, 30, 5);
-		w1.print(1, 1, 'Hello world!');
+		w1.printColoured(1, 1, '@r#deH@oe@yl@gl@lbo@_#_ #q@kworld@_#_!');
 		term.addWindow(w1);
 
+		// create a window that responds to input
 		w2 = new BorderedWindow(18, 4, 2, 31, 10);
 		w2.print(1, 1, 'I\'m on top!');
-		w2.print(1, 2, 'Move me randomly with [SPACE]');
+		w2.printColoured(1, 3, 'Move me randomly with @k#w[SPACE]');
 		w2.bindKey(new KeyBinding(KeyCode.space, KeyEventType.PRESSED, function() {
 			w2.x = randomInt(0, 49);
 			w2.y = randomInt(0, 15);
@@ -33,6 +38,7 @@ class Example {
 		}));
 		term.addWindow(w2);
 
+		// grab a timer so that we can flash the cursor in the 'Hello World' window
 		js.Browser.window.setInterval(refresh, 500);
 	}
 
