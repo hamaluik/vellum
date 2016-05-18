@@ -6,5 +6,6 @@ class TestMain implements Buddy<[
 	vellum.TestGlyph,
 	vellum.TestDisplay,
 	vellum.TestTerminal,
-	vellum.TestRenderableTerminal
+	vellum.TestRenderableTerminal,
+	vellum.TestWindow
 ]> {}

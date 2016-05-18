@@ -10,7 +10,15 @@ class CanvasTerminal extends RenderableTerminal {
 	var canvas:CanvasElement;
 	var context:CanvasRenderingContext2D;
 
-	public function new(width:Int, height:Int, ?font:Font, ?canvas:CanvasElement) {
+	override public function set_handlingInput(x:Bool):Bool {
+		js.Browser.document.body.onkeydown = x ? onKeyDown : null;
+		js.Browser.document.body.onkeyup = x ? onKeyUp : null;
+		js.Browser.document.body.onkeypress = x ? onKeyPress : null;
+		handlingInput = x;
+		return handlingInput;
+	}
+
+	public function new(width:Int, height:Int, ?font:Font, ?canvas:CanvasElement, ?handleInput:Bool) {
 		super(width, height);
 
 		// create a canvas to draw on if we don't have one
@@ -37,6 +45,36 @@ class CanvasTerminal extends RenderableTerminal {
 
 		// set up the font
 		context.font = '${font.size * js.Browser.window.devicePixelRatio}px ${font.family}, monospace';
+
+		// enable input handling (by default)
+		handlingInput = handleInput == null ? true : handleInput;
+	}
+
+	function onKeyDown(event:js.html.KeyboardEvent) {
+		onKeyEvent(event, KeyEventType.DOWN);
+	}
+
+	function onKeyUp(event:js.html.KeyboardEvent) {
+		onKeyEvent(event, KeyEventType.UP);
+	}
+
+	function onKeyPress(event:js.html.KeyboardEvent) {
+		onKeyEvent(event, KeyEventType.PRESSED);
+	}
+
+	function onKeyEvent(event:js.html.KeyboardEvent, type:KeyEventType) {
+		// if we don't have any windows to accept input, then don't bother!
+		if(windows.length < 1) return;
+
+		// grab the keycode
+		// firefox uses 59 for semicolon
+		var keyCode:KeyCode = event.keyCode == 59 ? KeyCode.semicolon : cast(event.keyCode);
+
+		// send the bindings to our topmost window!
+		if(windows[windows.length - 1].handleKeys(keyCode, type, event.shiftKey, event.altKey)) {
+			// if the window handles the event, stop the propagation!
+			event.preventDefault();
+		}
 	}
 
 	override public function drawGlyph(x:Int, y:Int, glyph:Glyph) {

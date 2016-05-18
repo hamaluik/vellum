@@ -3,6 +3,12 @@ package vellum;
 class Terminal extends Display {
 	var windows:Array<Window>;
 
+	public var handlingInput(default, set):Bool;
+	public function set_handlingInput(x:Bool):Bool {
+		handlingInput = x;
+		return handlingInput;
+	}
+
 	public function new(width:Int, height:Int) {
 		windows = [];
 		super(width, height);
