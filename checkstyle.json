@@ -46,15 +46,15 @@
 				"thresholds": [
 					{
 						"severity": "INFO",
-						"complexity": 6
+						"complexity": 10
 					},
 					{
 						"severity": "WARNING",
-						"complexity": 11
+						"complexity": 17
 					},
 					{
 						"severity": "ERROR",
-						"complexity": 21
+						"complexity": 25
 					}
 				]
 			},
@@ -277,15 +277,6 @@
 				"severity": "ERROR"
 			},
 			"type": "NeedBraces"
-		},
-		{
-			"type": "NestedForDepth"
-		},
-		{
-			"type": "NestedIfDepth"
-		},
-		{
-			"type": "NestedTryDepth"
 		},
 		{
 			"props": {
