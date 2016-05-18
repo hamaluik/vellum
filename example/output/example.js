@@ -7,8 +7,8 @@ function $extend(from, fields) {
 	return proto;
 }
 var vellum_Display = function(width,height) {
-	this.set_width(width);
-	this.set_height(height);
+	this._width = width;
+	this._height = height;
 	this.glyphs = [];
 	var _g = 0;
 	while(_g < height) {
@@ -24,20 +24,60 @@ var vellum_Display = function(width,height) {
 };
 vellum_Display.__name__ = true;
 vellum_Display.prototype = {
-	set_width: function(w) {
-		return this.width = w;
+	get_width: function() {
+		return this._width;
+	}
+	,set_width: function(w) {
+		if(w != this.get_width()) {
+			var newGlyphs = [];
+			var _g1 = 0;
+			var _g = this.get_height();
+			while(_g1 < _g) {
+				var y = _g1++;
+				var row = [];
+				var _g2 = 0;
+				while(_g2 < w) {
+					var x = _g2++;
+					var g;
+					if(x < this.get_width()) g = this.glyphs[y][x]; else g = vellum_Glyph.fromChar(" ");
+					row.push(g);
+				}
+				this.glyphs.push(row);
+			}
+		}
+		return this._width = w;
+	}
+	,get_height: function() {
+		return this._height;
 	}
 	,set_height: function(h) {
-		return this.height = h;
+		if(h != this.get_height()) {
+			var newGlyphs = [];
+			var _g = 0;
+			while(_g < h) {
+				var y = _g++;
+				var row = [];
+				var _g2 = 0;
+				var _g1 = this.get_width();
+				while(_g2 < _g1) {
+					var x = _g2++;
+					var g;
+					if(y < this.get_height()) g = this.glyphs[y][x]; else g = vellum_Glyph.fromChar(" ");
+					row.push(g);
+				}
+				this.glyphs.push(row);
+			}
+		}
+		return this._height = h;
 	}
 	,clear: function(clearGlyph) {
 		if(clearGlyph == null) clearGlyph = vellum_Glyph.fromChar(" ");
 		var _g1 = 0;
-		var _g = this.height;
+		var _g = this.get_height();
 		while(_g1 < _g) {
 			var y = _g1++;
 			var _g3 = 0;
-			var _g2 = this.width;
+			var _g2 = this.get_width();
 			while(_g3 < _g2) {
 				var x = _g3++;
 				this.writeGlyph(x,y,clearGlyph);
@@ -47,8 +87,8 @@ vellum_Display.prototype = {
 	,glyph: function(x,y) {
 		if(x < 0) throw new js__$Boot_HaxeError("_x_ must be >= 0!");
 		if(y < 0) throw new js__$Boot_HaxeError("_y_ must be >= 0!");
-		if(x >= this.width) throw new js__$Boot_HaxeError("_x_ must be < width = " + this.width);
-		if(y >= this.height) throw new js__$Boot_HaxeError("_y_ must be < height = " + this.height);
+		if(x >= this.get_width()) throw new js__$Boot_HaxeError("_x_ must be < width = " + this.get_width());
+		if(y >= this.get_height()) throw new js__$Boot_HaxeError("_y_ must be < height = " + this.get_height());
 		return this.glyphs[y][x];
 	}
 	,print: function(x,y,text,foreground,background) {
@@ -56,7 +96,7 @@ vellum_Display.prototype = {
 		var _g = text.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			if(x + i >= this.width) break;
+			if(x + i >= this.get_width()) break;
 			this.writeCharCode(x + i,y,text.charCodeAt(i),foreground,background);
 		}
 	}
@@ -204,7 +244,7 @@ vellum_Display.prototype = {
 			i++;
 			if(fore) foreground = col; else background = col;
 		} else {
-			if(x + charCount >= this.width) break;
+			if(x + charCount >= this.get_width()) break;
 			this.writeCharCode(x + charCount,y,text.charCodeAt(i),foreground,background);
 			i++;
 			charCount++;
@@ -216,8 +256,8 @@ vellum_Display.prototype = {
 	,writeCharCode: function(x,y,code,foreground,background) {
 		if(x < 0) throw new js__$Boot_HaxeError("_x_ must be >= 0!");
 		if(y < 0) throw new js__$Boot_HaxeError("_y_ must be >= 0!");
-		if(x >= this.width) throw new js__$Boot_HaxeError("_x_ must be < width = " + this.width);
-		if(y >= this.height) throw new js__$Boot_HaxeError("_y_ must be < height = " + this.height);
+		if(x >= this.get_width()) throw new js__$Boot_HaxeError("_x_ must be < width = " + this.get_width());
+		if(y >= this.get_height()) throw new js__$Boot_HaxeError("_y_ must be < height = " + this.get_height());
 		this.glyphs[y][x].code = code;
 		this.glyphs[y][x].set_foreground(foreground);
 		this.glyphs[y][x].set_background(background);
@@ -268,23 +308,23 @@ BorderedWindow.__super__ = vellum_Window;
 BorderedWindow.prototype = $extend(vellum_Window.prototype,{
 	render: function() {
 		var _g1 = 1;
-		var _g = this.width - 1;
+		var _g = this.get_width() - 1;
 		while(_g1 < _g) {
 			var i = _g1++;
 			this.writeChar(i,0,"═","rgb(128, 128, 128)");
-			this.writeChar(i,this.height - 1,"═","rgb(128, 128, 128)");
+			this.writeChar(i,this.get_height() - 1,"═","rgb(128, 128, 128)");
 		}
 		var _g11 = 1;
-		var _g2 = this.height - 1;
+		var _g2 = this.get_height() - 1;
 		while(_g11 < _g2) {
 			var j = _g11++;
 			this.writeChar(0,j,"║","rgb(128, 128, 128)");
-			this.writeChar(this.width - 1,j,"║","rgb(128, 128, 128)");
+			this.writeChar(this.get_width() - 1,j,"║","rgb(128, 128, 128)");
 		}
 		this.writeChar(0,0,"╔","rgb(128, 128, 128)");
-		this.writeChar(this.width - 1,0,"╗","rgb(128, 128, 128)");
-		this.writeChar(this.width - 1,this.height - 1,"╝","rgb(128, 128, 128)");
-		this.writeChar(0,this.height - 1,"╚","rgb(128, 128, 128)");
+		this.writeChar(this.get_width() - 1,0,"╗","rgb(128, 128, 128)");
+		this.writeChar(this.get_width() - 1,this.get_height() - 1,"╝","rgb(128, 128, 128)");
+		this.writeChar(0,this.get_height() - 1,"╚","rgb(128, 128, 128)");
 	}
 });
 var Example = function() { };
@@ -472,16 +512,16 @@ vellum_Terminal.prototype = $extend(vellum_Display.prototype,{
 			++_g;
 			w.render();
 			var _g3 = 0;
-			var _g2 = w.height;
+			var _g2 = w.get_height();
 			while(_g3 < _g2) {
 				var wy = _g3++;
 				var _g5 = 0;
-				var _g4 = w.width;
+				var _g4 = w.get_width();
 				while(_g5 < _g4) {
 					var wx = _g5++;
 					var tx = w.x + wx;
 					var ty = w.y + wy;
-					if(tx < 0 || ty < 0 || tx >= this.width || ty >= this.height) continue;
+					if(tx < 0 || ty < 0 || tx >= this.get_width() || ty >= this.get_height()) continue;
 					this.writeGlyph(tx,ty,w.glyphs[wy][wx]);
 				}
 			}
@@ -509,11 +549,11 @@ vellum_RenderableTerminal.prototype = $extend(vellum_Terminal.prototype,{
 	render: function() {
 		vellum_Terminal.prototype.render.call(this);
 		var _g1 = 0;
-		var _g = this.height;
+		var _g = this.get_height();
 		while(_g1 < _g) {
 			var y = _g1++;
 			var _g3 = 0;
-			var _g2 = this.width;
+			var _g2 = this.get_width();
 			while(_g3 < _g2) {
 				var x = _g3++;
 				if(this.glyphs[y][x].notEquals(this.oldGlyphs[y][x])) {
@@ -538,12 +578,7 @@ var vellum_CanvasTerminal = function(width,height,font,canvas,handleInput) {
 	this.context = canvas.getContext("2d",null);
 	if(font == null) font = vellum_Font.Courier();
 	this.font = font;
-	var canvasWidth = font.charWidth * width;
-	var canvasHeight = font.lineHeight * height;
-	canvas.width = Std["int"](canvasWidth * window.devicePixelRatio);
-	canvas.height = Std["int"](canvasHeight * window.devicePixelRatio);
-	canvas.style.width = "" + canvasWidth + "px";
-	canvas.style.height = "" + canvasHeight + "px";
+	this.resizeCanvas();
 	this.context.font = "" + font.size * window.devicePixelRatio + "px " + font.family + ", monospace";
 	this.set_handlingInput(handleInput == null?true:handleInput);
 };
@@ -556,6 +591,24 @@ vellum_CanvasTerminal.prototype = $extend(vellum_RenderableTerminal.prototype,{
 		if(x) window.document.body.onkeypress = $bind(this,this.onKeyPress); else window.document.body.onkeypress = null;
 		this.handlingInput = x;
 		return this.handlingInput;
+	}
+	,set_width: function(w) {
+		vellum_RenderableTerminal.prototype.set_width.call(this,w);
+		this.resizeCanvas();
+		return this.get_width();
+	}
+	,set_height: function(h) {
+		vellum_RenderableTerminal.prototype.set_height.call(this,h);
+		this.resizeCanvas();
+		return this.get_height();
+	}
+	,resizeCanvas: function() {
+		var canvasWidth = this.font.charWidth * this.get_width();
+		var canvasHeight = this.font.lineHeight * this.get_height();
+		this.canvas.width = Std["int"](canvasWidth * window.devicePixelRatio);
+		this.canvas.height = Std["int"](canvasHeight * window.devicePixelRatio);
+		this.canvas.style.width = "" + canvasWidth + "px";
+		this.canvas.style.height = "" + canvasHeight + "px";
 	}
 	,onKeyDown: function(event) {
 		this.onKeyEvent(event,vellum_KeyEventType.DOWN);

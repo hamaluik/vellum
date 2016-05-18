@@ -18,7 +18,29 @@ class CanvasTerminal extends RenderableTerminal {
 		return handlingInput;
 	}
 
+	override public function set_width(w:Int):Int {
+		super.set_width(w);
+		resizeCanvas();
+		return width;
+	}
+
+	override public function set_height(h:Int):Int {
+		super.set_height(h);
+		resizeCanvas();
+		return height;
+	}
+
+	function resizeCanvas() {
+		var canvasWidth:Int = font.charWidth * width;
+		var canvasHeight:Int = font.lineHeight * height;
+		canvas.width = Std.int(canvasWidth * js.Browser.window.devicePixelRatio);
+		canvas.height = Std.int(canvasHeight * js.Browser.window.devicePixelRatio);
+		canvas.style.width = '${canvasWidth}px';
+		canvas.style.height = '${canvasHeight}px';
+	}
+
 	public function new(width:Int, height:Int, ?font:Font, ?canvas:CanvasElement, ?handleInput:Bool) {
+		// initialize the display
 		super(width, height);
 
 		// create a canvas to draw on if we don't have one
@@ -36,12 +58,7 @@ class CanvasTerminal extends RenderableTerminal {
 		this.font = font;
 
 		// size the canvas appropriately
-		var canvasWidth:Int = font.charWidth * width;
-		var canvasHeight:Int = font.lineHeight * height;
-		canvas.width = Std.int(canvasWidth * js.Browser.window.devicePixelRatio);
-		canvas.height = Std.int(canvasHeight * js.Browser.window.devicePixelRatio);
-		canvas.style.width = '${canvasWidth}px';
-		canvas.style.height = '${canvasHeight}px';
+		resizeCanvas();
 
 		// set up the font
 		context.font = '${font.size * js.Browser.window.devicePixelRatio}px ${font.family}, monospace';

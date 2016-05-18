@@ -5,23 +5,48 @@ using StringTools;
 class Display {
 	var glyphs:Array<Array<Glyph>>;
 
-	public var width(default, set):Int;
+	var _width:Int;
+	public var width(get, set):Int;
+	public function get_width():Int return _width;
 	@SuppressWarnings('checkstyle:InnerAssignment')
 	public function set_width(w:Int):Int {
-		// @todo: resize!
-		return width = w;
+		if(w != width) {
+			var newGlyphs:Array<Array<Glyph>> = [];
+			for(y in 0...height) {
+				var row:Array<Glyph> = [];
+				for(x in 0...w) {
+					var g:Glyph = if(x < width) glyphs[y][x]; else Glyph.fromChar(' ');
+					row.push(g);
+				}
+				glyphs.push(row);
+			}
+		}
+
+		return _width = w;
 	}
 
-	public var height(default, set):Int;
+	var _height:Int;
+	public var height(get, set):Int;
+	public function get_height():Int return _height;
 	@SuppressWarnings('checkstyle:InnerAssignment')
 	public function set_height(h:Int):Int {
-		// @todo: resize!
-		return height = h;
+		if(h != height) {
+			var newGlyphs:Array<Array<Glyph>> = [];
+			for(y in 0...h) {
+				var row:Array<Glyph> = [];
+				for(x in 0...width) {
+					var g:Glyph = if(y < height) glyphs[y][x]; else Glyph.fromChar(' ');
+					row.push(g);
+				}
+				glyphs.push(row);
+			}
+		}
+		return _height = h;
 	}
 
 	public function new(width:Int, height:Int) {
-		this.width = width;
-		this.height = height;
+		this._width = width;
+		this._height = height;
 
 		// initialize our glyphs
 		glyphs = [];
