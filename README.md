@@ -32,4 +32,4 @@ term.render();
 
 ### Live Sample
 
-A [live sample](http://FuzzyWuzzie.github.io/vellum/) is available to show it in action.
+A [live sample](http://hamaluik.github.io/vellum/) is available to show it in action.
